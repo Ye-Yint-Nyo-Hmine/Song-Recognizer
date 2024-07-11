@@ -1,6 +1,7 @@
 # Song Recognizer
 
 """
+> Theses are the todo things from the documents
 Creating functions for converting all variety of audio recordings, 
 be them recorded from the microphone or digital audio files, into a NumPy-array of digital samples.
 
@@ -36,4 +37,23 @@ and produce random clips of it at a desired, shorter length. This can help with 
 For example you can record a 1 minutes clip of a song, played from your phone and then create many random 10 second clips from it 
 and see if they all successfully match against your database.
     
+"""
+
+"""
+# TODO: 
+1. Plan the structure for the code (ie: functions we need)
+2. Create a strategy to assign tasks different people
+"""
+
+"""
+These are the functions I think we should create so far (feel free to change/add on):
+
+- song_to_sample
+- record_to_sample
+- PCM
+- pressure
+- fft_complex_to_real
+- find_peaks
+- fingerprints
+
 """
