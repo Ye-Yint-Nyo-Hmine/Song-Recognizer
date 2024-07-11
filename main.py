@@ -49,7 +49,7 @@ I am not very familiar with creating jupyter notebooks, so maybe we could create
 """
 These are the functions I think we should create so far (feel free to change/add on):
 
-- song_to_sample
+- song_to_sample 
 - record_to_sample
 - PCM (Copy paste it from the notebooks)
 - pressure (copy paste it from the notebooks)
