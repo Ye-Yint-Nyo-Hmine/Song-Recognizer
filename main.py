@@ -51,9 +51,9 @@ These are the functions I think we should create so far (feel free to change/add
 
 - song_to_sample
 - record_to_sample
-- PCM
-- pressure
-- fft_complex_to_real
+- PCM (Copy paste it from the notebooks)
+- pressure (copy paste it from the notebooks)
+- fft_complex_to_real (copy paste in from the notebooks)
 - find_peaks
 - create_fingerprints
 - load_save() func to save data to a dictionary
