@@ -40,6 +40,7 @@ and see if they all successfully match against your database.
 """
 
 """
+I am not very familiar with creating jupyter notebooks, so maybe we could create python files and then, just work on it
 # TODO: 
 1. Plan the structure for the code (ie: functions we need)
 2. Create a strategy to assign tasks different people
