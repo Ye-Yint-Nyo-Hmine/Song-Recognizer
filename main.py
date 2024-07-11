@@ -55,6 +55,10 @@ These are the functions I think we should create so far (feel free to change/add
 - pressure
 - fft_complex_to_real
 - find_peaks
-- fingerprints
+- create_fingerprints
+- load_save() func to save data to a dictionary
+- tally_fingerprints
+- add_songs
+- find_songs
 
 """
