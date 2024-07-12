@@ -1,8 +1,32 @@
 from tkinter import *
 from tkinter import filedialog
-from classifier_application import file_path_to_fingerprints, get_accuracy_test, match
+from classifier_imports import *
+from classifier_application import *
+
 import pygame
 import os
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+# from microphone import record_audio # add if utilizing microphone and in Microphone directory
+from IPython.display import Audio
+from typing import Tuple
+import librosa
+import operator
+
+from numba import njit
+from scipy.ndimage.filters import maximum_filter
+from scipy.ndimage.morphology import generate_binary_structure
+from scipy.spatial.distance import cdist
+from scipy.ndimage.morphology import iterate_structure
+
+from typing import Tuple, Callable, List, Union
+
+import uuid
+import os
+from pathlib import Path
+from collections import Counter
 
 color_palette = {
     "bg": "#171717",
@@ -42,7 +66,17 @@ def recognizer(frames, sample_rate):
     # Todo: Implement the song recognizer here by calling the appropriate set of functions to recognize the song
     #* And then, return a list of songs from highest ranked to lowest ranked (could be song id). Lmk if you finished this
     """
-    best_ranked = "" # this should be changed to the best ranked matched song PATH***
+    samples = convert_mic_frames_to_audio(frames)
+
+     S = dig_samp_to_spec(samples)
+
+    neighborhood = iterate_structure(generate_binary_structure(2, 1), 20)
+
+    peak_locations = local_peak_locations(S, neighborhood, amp_min=find_cutoff_amp(S, 0.75))
+
+    fingerprints, abs_times = local_peaks_to_fingerprints_with_absolute_times(peak_locations, 15)
+    
+    best_ranked = match(fingerprints) # this should be changed to the best ranked matched song PATH***
     return best_ranked
     
 
