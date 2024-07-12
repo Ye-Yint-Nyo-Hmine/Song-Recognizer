@@ -54,7 +54,7 @@ def file_path_to_fingerprints(file_path: Union[str, Path], amplitude_percentile:
 
     fingerprints = local_peaks_to_fingerprints(peak_locations, fanout_number)
    
-    return match(fingerprints)
+    return fingerprints
 
 def file_path_to_fingerprints_and_absolute_times(file_path: Union[str, Path], amplitude_percentile: float=0.75, fanout_number: int=15):
     """Take the music file path of a song and returns its fingerprints and absolute_times.
