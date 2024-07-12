@@ -22,6 +22,7 @@ from scipy.spatial.distance import cdist
 from scipy.ndimage.morphology import iterate_structure
 
 from typing import Tuple, Callable, List, Union
+import time
 
 import uuid
 import os
@@ -61,23 +62,29 @@ def add_song():
         song_list.append((artist, title, os.path.basename(file_path)))
         display_songs("music_files/mp3", song_list)
 
-def recognizer(frames, sample_rate):
-    """
-    # Todo: Implement the song recognizer here by calling the appropriate set of functions to recognize the song
-    #* And then, return a list of songs from highest ranked to lowest ranked (could be song id). Lmk if you finished this
-    """
+def recognizer(frames):
+
+    print("Sampling... ")
     samples = convert_mic_frames_to_audio(frames)
 
-     S = dig_samp_to_spec(samples)
-
+    print("Spectoring... ")
+    S = dig_samp_to_spec(samples)
+    
+    print("Calculating Neighborhood... ")
     neighborhood = iterate_structure(generate_binary_structure(2, 1), 20)
 
+    print("Finding Peaks... ")
     peak_locations = local_peak_locations(S, neighborhood, amp_min=find_cutoff_amp(S, 0.75))
 
+    print("Converting Peaks to Fingerprints ...")
     fingerprints, abs_times = local_peaks_to_fingerprints_with_absolute_times(peak_locations, 15)
-    
+    print("Matching... ")
     best_ranked = match(fingerprints) # this should be changed to the best ranked matched song PATH***
-    return best_ranked
+    print("Best matched: ", best_ranked)
+    print("Starting to play best matched song...")
+    stop_song()
+    playsound(best_ranked)
+
     
 
 def record(duration=10):
@@ -88,12 +95,14 @@ def record(duration=10):
 
     listen_time = duration  # <COGSTUB> seconds
     frames, sample_rate = record_audio(listen_time)
-    recognizer(frames, sample_rate)
+    recognizer(frames)
+ 
 
 
 def get_song_list(path_folder):
     song_list = []
     for music in os.listdir(path_folder):
+        print(music.split(".")[0].split("--"))
         artist, title = music.split(".")[0].split("--")
         song = music
         song_list.append([artist, title, song, 0])

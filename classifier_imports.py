@@ -259,7 +259,7 @@ def local_peaks_to_fingerprints(local_peaks: List[Tuple[int, int]], num_fanout: 
         return "IndexError"
 
 def local_peaks_to_fingerprints_with_absolute_times(local_peaks: List[Tuple[int, int]], num_fanout: int):
-     """Returns the fingerprint and absolute time of the fingerprint of a set of peaks.
+    """Returns the fingerprint and absolute time of the fingerprint of a set of peaks.
 
     Parameters
     ----------
@@ -289,6 +289,41 @@ def local_peaks_to_fingerprints_with_absolute_times(local_peaks: List[Tuple[int,
         return fingerprints, abs_times
     else:
         return "IndexError"
+    
+def process_all_songs(directory_path: str, num_fanout: int = 5):
+    global dict_data_to_id
+    dict_data_to_id = {}
+    
+    for filename in os.listdir(directory_path):
+        if filename.endswith(".mp3"):
+            file_path = os.path.join(directory_path, filename)
+            print(f"Processing {file_path}...")
+
+            # Load and process the audio file
+            audio = load_music_file(file_path)
+            S = dig_samp_to_spec(audio)
+
+            # Define neighborhood structure for peak detection
+            neighborhood = generate_binary_structure(2, 1)
+            neighborhood = iterate_structure(neighborhood, 20)
+
+            # Detect peaks
+            amp_min = find_cutoff_amp(S, 0.77)
+            peaks = local_peak_locations(S, neighborhood, amp_min)
+
+            # Generate fingerprints
+            fingerprints = local_peaks_to_fingerprints(peaks, num_fanout)
+            song_id = str(uuid.uuid4())
+
+            # Store fingerprints in the dictionary
+            for fp in fingerprints:
+                if fp not in dict_data_to_id:
+                    dict_data_to_id[fp] = []
+                dict_data_to_id[fp].append((song_id, fp[2]))
+
+    print(f"Processed {len(dict_data_to_id)} unique fingerprints from {len(os.listdir(directory_path))} songs.")
+    return dict_data_to_id
+    
     
 ### Set cutoff for amplitude to disregard background noise in real world samples ###
 
@@ -327,7 +362,9 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     Traverses database for matching input-fingerprint
     Returns list of songs [(song ID,offset),...] in which input-fingerprint occurs
     """
+    
     songs=[]
+    
     for fp in dict_data_to_id.keys():
         
         if fingerprint[0] == fp[0]:
@@ -335,10 +372,12 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
             for matching_fp in dict_data_to_id[fp]:
                 songs.append( (matching_fp[0], matching_fp[1] - fingerprint[1]) )
 
+    print(songs)
     return songs
 
 
 def match(test_fingerprints):
+    from collections import Counter
     """
     Traverses input-fingerprints
     Finds songs with fingerprints
@@ -347,6 +386,29 @@ def match(test_fingerprints):
     songs=[]
 
     for fp in test_fingerprints:
+        print(fp)
         songs += get_songs_with_fp(fp)
         
     return Counter(songs).most_common(1)[0][0][0] #remove indexes if error, returns song id
+
+
+
+if __name__ == '__main__':
+    frames = load_music_file("music_files\mp3\Elliott-Smith--Pitseleh.mp3")
+    print("Sampling... ")
+    samples = convert_mic_frames_to_audio(frames)
+
+    print("Spectoring... ")
+    S = dig_samp_to_spec(samples)
+    
+    print("Calculating Neighborhood... ")
+    neighborhood = iterate_structure(generate_binary_structure(2, 1), 20)
+
+    print("Finding Peaks... ")
+    peak_locations = local_peak_locations(S, neighborhood, amp_min=find_cutoff_amp(S, 0.75))
+
+    print("Converting Peaks to Fingerprints ...")
+    fingerprints, abs_times = local_peaks_to_fingerprints_with_absolute_times(peak_locations, 15)
+    print("Matching... ")
+    best_ranked = match(fingerprints) # this should be changed to the best ranked matched song PATH***
+    print("Best matched: ", best_ranked)
