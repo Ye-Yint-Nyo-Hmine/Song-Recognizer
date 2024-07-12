@@ -37,8 +37,16 @@ Our general interface will look like this:
 
 With this, 
 
--[x]you will be able to add songs into the database
--[x]record a sample of the song you are looking for and matched with the database
+- [x] you will be able to add songs into the database
+- [x] record a sample of the song you are looking for and matched with the database
+- [x] [play all songs uploaded](###Playing_Songs)
+
+###Playing_Songs
+To play a song, just click on the song name. To know if a song is playing it will light up green like shown below
+![image](https://github.com/user-attachments/assets/bdfb3547-7f3c-4881-b452-5ca35ba17d06)
+
+To stop playing, click on the song again.
+
 
 ## Libraries Used
 
