@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
+from classifier_application import file_path_to_fingerprints, get_accuracy, match
 import pygame
 import os
 
@@ -41,6 +42,26 @@ def recognizer():
     # Todo: Implement the song recognizer here by calling the appropriate set of functions to recognize the song
     #* And then, return a list of songs from highest ranked to lowest ranked (could be song id). Lmk if you finished this
     """
+    AMP_PERCENTILE = .75
+    FANOUT_NUMBER = 15
+    test_usage_file = "music_files\mp3\Sean-Fournier--Falling-For-You.mp3"
+    test_testing_file = "music_files\\test\sean_secs.wav"
+    # get files
+    print("Getting Usage fingerprints ...")
+    usage_fingerprints = file_path_to_fingerprints(test_usage_file)
+    print("Getting Test fingerprints ...")
+    test_fingerprints = file_path_to_fingerprints(test_usage_file)
+    print("Getting Accuracy ...")
+    accuracy = get_accuracy(usage_fingerprints, test_fingerprints)
+    print("Matching ...")
+    match(test_fingerprints)
+
+def record():
+    """
+    # Todo: Implement the record function here
+    """
+    pass
+
 
 def get_song_list(path_folder):
     song_list = []
@@ -66,19 +87,35 @@ def play_song(path, song_list, index):
         display_songs(main_path, song_list)
 
 
+def get_song_duration(path):
+    try:
+        file_size = os.path.getsize(path)
+        bitrate = 128000
+        duration = int(file_size * 8 / bitrate)
+        minutes = duration // 60
+        seconds = duration - (60*minutes)
+        return minutes, seconds
+    except Exception as e:
+        print(f"Error estimating MP3 file duration: {e}")
+        return None
+
+
 def stop_song():
-    print("stopping ...")
     pygame.mixer.music.stop()
 
-def display_songs(music_path, song_list, max_show=10, x_origin=1000, y_origin=200, spacing=32):
+def display_songs(music_path, song_list, max_show=10, x_origin=50, y_origin=150, spacing=32):
     playlist_label = Label(text="Playlist - We Love Bytes", font=font_style_medium, bg=color_palette["bg"], 
                             fg=color_palette["accent"], borderwidth=0, relief="sunken").place(x=x_origin, y=y_origin-20)
     for index, songs in enumerate(song_list):
+        if index >= 14 and index % 14 == 0:
+            y_origin = 150
+            x_origin += 550
         artist, title, song, playing = songs
         fg = color_palette["text"]
         if playing:
             fg = color_palette["active text"]
-        song_block = Button(root, text=f"{index}.  {title}  by {artist}", font=font_style_small, bg=color_palette["bg"], 
+        song_duration = get_song_duration(os.path.join(music_path, song))
+        song_block = Button(root, text=f"{song_duration[0]:02}:{song_duration[1]:02}.  {title}  by {artist}", font=font_style_small, bg=color_palette["bg"], 
                             fg=fg, borderwidth=0, relief="sunken", 
                             activebackground=color_palette["bg"], activeforeground=color_palette["active text"], 
                             command=lambda path=os.path.join(music_path, song), song_list=song_list, index=index: play_song(path, song_list, index))
@@ -86,11 +123,24 @@ def display_songs(music_path, song_list, max_show=10, x_origin=1000, y_origin=20
         song_block.place(x=x_origin, y=y_origin)
 
 
+        
 
+main_buttons_y = 750
 add_song_button = Button(root, text=f"Add Song", font=font_style_medium, bg=color_palette["bg"], 
                             fg=color_palette["accent"], borderwidth=0, relief="sunken", 
                             activebackground=color_palette["bg"], activeforeground=color_palette["active text"], 
-                            command=add_song).place(x=30, y=500)
+                            command=add_song).place(x=50, y=main_buttons_y)
+record_song_button = Button(root, text=f"Record", font=font_style_medium, bg=color_palette["bg"], 
+                            fg=color_palette["active text"], borderwidth=0, relief="sunken", 
+                            activebackground=color_palette["bg"], activeforeground=color_palette["accent2"], 
+                            command=record).place(x=300, y=main_buttons_y)
+
+recgonize_song_button = Button(root, text=f"Recognize", font=font_style_medium, bg=color_palette["bg"], 
+                            fg=color_palette["accent2"], borderwidth=0, relief="sunken", 
+                            activebackground=color_palette["bg"], activeforeground=color_palette["active text"], 
+                            command=record).place(x=500, y=main_buttons_y)
+
+
 
 main_path = "music_files/mp3"
 song_list = get_song_list(main_path)
