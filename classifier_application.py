@@ -69,12 +69,15 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     """
     songs=[]
     for fp in dict_data_to_id.keys():
+        
         if fingerprint[0] == fp[0]:
-            songs.append((dict_data_to_id[fp][0],dict_data_to_id[fp][1][1] - fingerprint[1]))
-            
+            #appends ( ('song ID', absolute time when of peak), offset)
+            for matching_fp in dict_data_to_id[fp]:
+                songs.append( (matching_fp[0], matching_fp[1] - fingerprint[1]) )
+
     return songs
 
-#check if this works with the offput in tuple
+
 def match(test_fingerprints):
     """
     Traverses input-fingerprints
@@ -84,6 +87,6 @@ def match(test_fingerprints):
     songs=[]
 
     for fp in test_fingerprints:
-        songs.append(*get_songs_with_fp(fp))
-
-    return Counter(songs).most_common()
+        songs += get_songs_with_fp(fp)
+        
+    return Counter(songs).most_common(1)[0][0][0] #remove indexes if error, returns song id
