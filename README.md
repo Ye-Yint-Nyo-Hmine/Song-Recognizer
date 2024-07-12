@@ -39,9 +39,9 @@ With this,
 
 - [x] you will be able to add songs into the database
 - [x] record a sample of the song you are looking for and matched with the database
-- [x] [play all songs uploaded](###Playing_Songs)
+- [x] [play all songs uploaded](###Playing-Songs)
 
-### Playing_Songs
+### Playing Songs
 To play a song, just click on the song name. To know if a song is playing it will light up green like shown below
 ![image](https://github.com/user-attachments/assets/bdfb3547-7f3c-4881-b452-5ca35ba17d06)
 
