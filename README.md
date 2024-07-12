@@ -29,6 +29,11 @@ After creating an environment, install libraries by going into the cloned folder
 
 ```pip install -r requirements.txt```
 
+### Running the Code
+Finally, run the file "interface.py":
+
+```python interface.py```
+
 
 ## Usage
 Our general interface will look like this: 
