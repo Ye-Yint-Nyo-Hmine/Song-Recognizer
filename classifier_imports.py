@@ -1,3 +1,23 @@
+### Dependencies ###
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+# from microphone import record_audio # add if utilizing microphone and in Microphone directory
+from IPython.display import Audio
+from typing import Tuple
+import librosa
+
+from numba import njit
+from scipy.ndimage.filters import maximum_filter
+from scipy.ndimage.morphology import generate_binary_structure
+from scipy.spatial.distance import cdist
+from scipy.ndimage.morphology import iterate_structure
+
+from typing import Tuple, Callable, List, Union
+
+import os
+from pathlib import Path
+
 ### Load audio file from database ###
 
 def load_music_file(file_path: str):
