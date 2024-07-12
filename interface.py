@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
-from classifier_application import file_path_to_fingerprints, get_accuracy, match
+from classifier_application import file_path_to_fingerprints, get_accuracy_test, match
 import pygame
 import os
 
@@ -52,15 +52,18 @@ def recognizer():
     print("Getting Test fingerprints ...")
     test_fingerprints = file_path_to_fingerprints(test_usage_file)
     print("Getting Accuracy ...")
-    accuracy = get_accuracy(usage_fingerprints, test_fingerprints)
+    accuracy = get_accuracy_test(usage_fingerprints, test_fingerprints)
     print("Matching ...")
     match(test_fingerprints)
 
-def record():
+def record(duration=10):
     """
     # Todo: Implement the record function here
     """
-    pass
+    from microphone import record_audio
+
+    listen_time = duration  # <COGSTUB> seconds
+    frames, sample_rate = record_audio(listen_time)
 
 
 def get_song_list(path_folder):
@@ -138,7 +141,7 @@ record_song_button = Button(root, text=f"Record", font=font_style_medium, bg=col
 recgonize_song_button = Button(root, text=f"Recognize", font=font_style_medium, bg=color_palette["bg"], 
                             fg=color_palette["accent2"], borderwidth=0, relief="sunken", 
                             activebackground=color_palette["bg"], activeforeground=color_palette["active text"], 
-                            command=record).place(x=500, y=main_buttons_y)
+                            command=recognizer).place(x=500, y=main_buttons_y)
 
 
 
