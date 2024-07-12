@@ -37,24 +37,14 @@ def add_song():
         song_list.append((artist, title, os.path.basename(file_path)))
         display_songs("music_files/mp3", song_list)
 
-def recognizer():
+def recognizer(frames, sample_rate):
     """
     # Todo: Implement the song recognizer here by calling the appropriate set of functions to recognize the song
     #* And then, return a list of songs from highest ranked to lowest ranked (could be song id). Lmk if you finished this
     """
-    AMP_PERCENTILE = .75
-    FANOUT_NUMBER = 15
-    test_usage_file = "music_files\mp3\Sean-Fournier--Falling-For-You.mp3"
-    test_testing_file = "music_files\\test\sean_secs.wav"
-    # get files
-    print("Getting Usage fingerprints ...")
-    usage_fingerprints = file_path_to_fingerprints(test_usage_file)
-    print("Getting Test fingerprints ...")
-    test_fingerprints = file_path_to_fingerprints(test_usage_file)
-    print("Getting Accuracy ...")
-    accuracy = get_accuracy_test(usage_fingerprints, test_fingerprints)
-    print("Matching ...")
-    match(test_fingerprints)
+    best_ranked = "" # this should be changed to the best ranked matched song PATH***
+    return best_ranked
+    
 
 def record(duration=10):
     """
@@ -64,6 +54,7 @@ def record(duration=10):
 
     listen_time = duration  # <COGSTUB> seconds
     frames, sample_rate = record_audio(listen_time)
+    recognizer(frames, sample_rate)
 
 
 def get_song_list(path_folder):
@@ -133,15 +124,10 @@ add_song_button = Button(root, text=f"Add Song", font=font_style_medium, bg=colo
                             fg=color_palette["accent"], borderwidth=0, relief="sunken", 
                             activebackground=color_palette["bg"], activeforeground=color_palette["active text"], 
                             command=add_song).place(x=50, y=main_buttons_y)
-record_song_button = Button(root, text=f"Record", font=font_style_medium, bg=color_palette["bg"], 
+record_song_button = Button(root, text=f"Recognize", font=font_style_medium, bg=color_palette["bg"], 
                             fg=color_palette["active text"], borderwidth=0, relief="sunken", 
                             activebackground=color_palette["bg"], activeforeground=color_palette["accent2"], 
                             command=record).place(x=300, y=main_buttons_y)
-
-recgonize_song_button = Button(root, text=f"Recognize", font=font_style_medium, bg=color_palette["bg"], 
-                            fg=color_palette["accent2"], borderwidth=0, relief="sunken", 
-                            activebackground=color_palette["bg"], activeforeground=color_palette["active text"], 
-                            command=recognizer).place(x=500, y=main_buttons_y)
 
 
 
