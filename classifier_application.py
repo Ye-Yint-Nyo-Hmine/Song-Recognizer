@@ -53,40 +53,5 @@ def file_path_to_fingerprints(file_path: Union[str, Path], amplitude_percentile:
     peak_locations = local_peak_locations(S, neighborhood, amp_min=find_cutoff_amp(S, amplitude_percentile))
 
     fingerprints = local_peaks_to_fingerprints(peak_locations, fanout_number)
-    return fingerprints
-
-def get_accuracy_test(song_fingerprints: Tuple[int, int, int], test_fingerprints: Tuple[int, int, int]):
-    """Returns the percent match as a decimal of a test clip compared to a pristine studio recording."""
-
-    matches = [fp for fp in test_fingerprints if fp in song_fingerprints]
-
-    return len(matches) / len(test_fingerprints)
-
-def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
-    """
-    Traverses database for matching input-fingerprint
-    Returns list of songs [(song ID,offset),...] in which input-fingerprint occurs
-    """
-    songs=[]
-    for fp in dict_data_to_id.keys():
-        
-        if fingerprint[0] == fp[0]:
-            #appends ( ('song ID', absolute time when of peak), offset)
-            for matching_fp in dict_data_to_id[fp]:
-                songs.append( (matching_fp[0], matching_fp[1] - fingerprint[1]) )
-
-    return songs
-
-
-def match(test_fingerprints):
-    """
-    Traverses input-fingerprints
-    Finds songs with fingerprints
-    Returns song with most occurances of test_fingerprints
-    """
-    songs=[]
-
-    for fp in test_fingerprints:
-        songs += get_songs_with_fp(fp)
-        
-    return Counter(songs).most_common(1)[0][0][0] #remove indexes if error, returns song id
+   
+    return match(fingerprints)
