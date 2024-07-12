@@ -37,8 +37,8 @@ Our general interface will look like this:
 
 With this, 
 
--[x] you will be able to add songs into the database
--[x] record a sample of the song you are looking for and matched with the database
+-[x]you will be able to add songs into the database
+-[x]record a sample of the song you are looking for and matched with the database
 
 ## Libraries Used
 
