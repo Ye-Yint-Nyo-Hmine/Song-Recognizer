@@ -7,6 +7,7 @@ import matplotlib.mlab as mlab
 from IPython.display import Audio
 from typing import Tuple
 import librosa
+import operator
 
 from numba import njit
 from scipy.ndimage.filters import maximum_filter
@@ -58,3 +59,17 @@ def get_accuracy(song_fingerprints: Tuple[int, int, int], test_fingerprints: Tup
     matches = [fp for fp in test_fingerprints if fp in song_fingerprints]
 
     return len(matches) / len(test_fingerprints)
+
+#function hasn't been tested
+def match(test_fingerprints):
+    """
+    Traverses fingerprints of all songs in database
+    Compares fingerprints to test audio
+    Returns song with most matching fingerprints to audio
+    """
+    accuracies = {}
+    
+    for data, id in dict_data_to_id.items():
+        accuracies[id] = get_accuracy(data,test_fingerprints)
+
+    match = max(accuracies.items(), key = operator.itemgetter(1))[0]
