@@ -86,3 +86,4 @@ def file_path_to_fingerprints_and_absolute_times(file_path: Union[str, Path], am
 
     fingerprints, abs_times = local_peaks_to_fingerprints_with_absolute_times(peak_locations, fanout_number)
     return fingerprints, abs_times
+

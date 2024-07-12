@@ -20,6 +20,8 @@ import os
 from pathlib import Path
 from collections import Counter
 
+SAMPLING_RATE = 44100
+
 ### Load audio file from database ###
 
 def load_music_file(file_path: str):
@@ -36,6 +38,7 @@ def load_music_file(file_path: str):
         Audio samples
     """
 
+    SAMPLING_RATE = 44100
     audio, samp_rate = librosa.load(file_path, sr=SAMPLING_RATE, mono=True)
     return audio
 
@@ -256,7 +259,7 @@ def local_peaks_to_fingerprints(local_peaks: List[Tuple[int, int]], num_fanout: 
         return "IndexError"
 
 def local_peaks_to_fingerprints_with_absolute_times(local_peaks: List[Tuple[int, int]], num_fanout: int):
-    """Returns the fingerprint and absolute time of the fingerprint of a set of peaks packaged as a tuple.
+     """Returns the fingerprint and absolute time of the fingerprint of a set of peaks.
 
     Parameters
     ----------
@@ -268,22 +271,22 @@ def local_peaks_to_fingerprints_with_absolute_times(local_peaks: List[Tuple[int,
 
     Returns
     -------
-    List[Tuple[Tuple[int, int, int], int]]
-        List of fingerprints with the absolute time stamps of the fingerprint."""
+    List[Tuple[int, int, int]] contained the reference point frequency, 
+    fanout term frequency, and change in time interval, and List[int] of the abs_times of fingerprints."""
 
-    result = [] #should be a list of lists
-
+    fingerprints = []
+    abs_times = []
+    
     if num_fanout <= len(local_peaks):
         for i in range(len(local_peaks) - num_fanout): # subtract because it had to be only peaks after, and dont want index out of bounds error
-            i_fingerprints_with_time = []
             i_freq, i_time = local_peaks[i]
             for j in range(1, num_fanout+1):
                 f_freq, f_time = local_peaks[i+j]
-                i_fingerprints_with_time.append(((i_freq, f_freq, f_time - i_time), i_time))
+                fingerprints.append((i_freq, f_freq, f_time - i_time))
+                abs_times.append(i_time)
             
-            result += i_fingerprints_with_time # contatenate lists
         
-        return result # should be a 3d list, that can then be zipped w the peaks if we need to know which peak its associated with
+        return fingerprints, abs_times
     else:
         return "IndexError"
     
