@@ -69,8 +69,9 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     """
     songs=[]
     for fp in dict_data_to_id.keys():
-        if fingerprint[0] in fp[0]:
-            songs.append(get_songs_with_fp(fingerprint))
+        if fingerprint[0] == fp[0]:
+            songs.append((dict_data_to_id[fp][0],dict_data_to_id[fp][1][1] - fingerprint[1]))
+            
     return songs
 
 #check if this works with the offput in tuple
@@ -82,7 +83,7 @@ def match(test_fingerprints):
     """
     songs=[]
 
-    for fingerprint in test_fingerprints:
-        songs.append(get_songs_with_fp(fingerprint))
+    for fp in test_fingerprints:
+        songs.append(*get_songs_with_fp(fp))
 
     return Counter(songs).most_common()
