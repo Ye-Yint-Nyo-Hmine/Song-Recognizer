@@ -53,40 +53,37 @@ def file_path_to_fingerprints(file_path: Union[str, Path], amplitude_percentile:
     peak_locations = local_peak_locations(S, neighborhood, amp_min=find_cutoff_amp(S, amplitude_percentile))
 
     fingerprints = local_peaks_to_fingerprints(peak_locations, fanout_number)
-    return fingerprints
+   
+    return match(fingerprints)
 
-def get_accuracy_test(song_fingerprints: Tuple[int, int, int], test_fingerprints: Tuple[int, int, int]):
-    """Returns the percent match as a decimal of a test clip compared to a pristine studio recording."""
+def file_path_to_fingerprints_and_absolute_times(file_path: Union[str, Path], amplitude_percentile: float=0.75, fanout_number: int=15):
+    """Take the music file path of a song and returns its fingerprints and absolute_times.
 
-    matches = [fp for fp in test_fingerprints if fp in song_fingerprints]
+    Parameters
+    ----------
+    file_path : Union[str, Path]
+        File path for music file
 
-    return len(matches) / len(test_fingerprints)
+    amplitude_percentile : float, optional
+         A demical < 1.0 for which all amplitudes less than the {percentile}
+         percentile of amplitudes will be disregarded
 
-def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
-    """
-    Traverses database for matching input-fingerprint
-    Returns list of songs [(song ID,offset),...] in which input-fingerprint occurs
-    """
-    songs=[]
-    for fp in dict_data_to_id.keys():
-        
-        if fingerprint[0] == fp[0]:
-            #appends ( ('song ID', absolute time when of peak), offset)
-            for matching_fp in dict_data_to_id[fp]:
-                songs.append( (matching_fp[0], matching_fp[1] - fingerprint[1]) )
+    fanout_number: int, optional
+        Number of fanouts for each reference point/peak in the spectrogram
 
-    return songs
+    Returns
+    -------
+    List[Tuple[int, int, int]] contained the reference point frequency, 
+    fanout term frequency, and change in time interval, and List[int] of the abs_times of fingerprints"""
 
+    samples = load_music_file(file_path)
 
-def match(test_fingerprints):
-    """
-    Traverses input-fingerprints
-    Finds songs with fingerprints
-    Returns song with most occurances of test_fingerprints
-    """
-    songs=[]
+    S = dig_samp_to_spec(samples)
 
-    for fp in test_fingerprints:
-        songs += get_songs_with_fp(fp)
-        
-    return Counter(songs).most_common(1)[0][0][0] #remove indexes if error, returns song id
+    neighborhood = iterate_structure(generate_binary_structure(2, 1), 20)
+
+    peak_locations = local_peak_locations(S, neighborhood, amp_min=find_cutoff_amp(S, amplitude_percentile))
+
+    fingerprints, abs_times = local_peaks_to_fingerprints_with_absolute_times(peak_locations, fanout_number)
+    return fingerprints, abs_times
+
