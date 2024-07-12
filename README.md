@@ -1,6 +1,9 @@
 ### Installing environment
-To start with an environment, I suggest using Conda/[WINDOWS](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html) 
-/[MAC](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html)
+To start with an environment, I suggest using Conda
+
+[WINDOWS](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html) 
+
+[MAC](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html)
 
 
 ### Creating environment
