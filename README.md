@@ -37,9 +37,9 @@ Our general interface will look like this:
 
 With this, 
 
-- [x] [you will be able to add songs into the database](###adding-songs)
+- [x] [you will be able to add songs into the database](###-adding-songs)
 - [x] record a sample of the song you are looking for and matched with the database
-- [x] [play all songs uploaded](###playing-songs)
+- [x] [play all songs uploaded](###-playing-songs)
 <br/>
 <br/>
 <br/>
