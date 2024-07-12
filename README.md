@@ -55,18 +55,17 @@ With this,
 - [x] [play all songs uploaded](#-playing-songs)
 <br/>
 <br/>
-<br/>
-<br/>
 
 ### Adding Songs
 To add a song, simply click the Add Song button and a file explorer will pop up. Simply choose a .mp3 file and it will get displayed on your screen where you can play it
 <br/>
 <br/>
-<br/>
-<br/>
+
 
 ### Recording Songs and Finding Songs
 To record a song, hit the record button which will take input from your microphone for 10 seconds. Then, hit the recognize button to find the best match. (We try out best to get rid of background noise)
+<br/>
+<br/>
 
 
 ### Playing Songs
