@@ -18,6 +18,8 @@ from typing import Tuple, Callable, List, Union
 import os
 from pathlib import Path
 
+SAMPLING_RATE = 44100
+
 ### Load audio file from database ###
 
 def load_music_file(file_path: str):
