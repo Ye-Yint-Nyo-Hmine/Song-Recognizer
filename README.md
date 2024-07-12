@@ -40,13 +40,17 @@ With this,
 - [x] [you will be able to add songs into the database](###Adding-Songs)
 - [x] record a sample of the song you are looking for and matched with the database
 - [x] [play all songs uploaded](###Playing-Songs)
-
-
+<br/>
+<br/>
+<br/>
+<br/>
 
 ### Adding Songs
 To add a song, simply click the Add Song button and a file explorer will pop up. Simply choose a .mp3 file and it will get displayed on your screen where you can play it
-
-
+<br/>
+<br/>
+<br/>
+<br/>
 
 ### Playing Songs
 To play a song, just click on the song name. To know if a song is playing it will light up green like shown below
