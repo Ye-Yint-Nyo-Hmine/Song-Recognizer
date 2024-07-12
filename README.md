@@ -50,9 +50,9 @@ Our general interface will look like this:
 
 With this, 
 
-- [x] [you will be able to add songs into the database](###-adding-songs)
-- [x] record a sample of the song you are looking for and matched with the database
-- [x] [play all songs uploaded](###-playing-songs)
+- [x] [you will be able to add songs into the database](#-adding-songs)
+- [x] [record a sample of the song you are looking for and matched with the database](#-recording-songs-and-finding-songs)
+- [x] [play all songs uploaded](#-playing-songs)
 <br/>
 <br/>
 <br/>
@@ -65,11 +65,17 @@ To add a song, simply click the Add Song button and a file explorer will pop up.
 <br/>
 <br/>
 
+### Recording Songs and Finding Songs
+To record a song, hit the record button which will take input from your microphone for 10 seconds. Then, hit the recognize button to find the best match. (We try out best to get rid of background noise)
+
+
 ### Playing Songs
 To play a song, just click on the song name. To know if a song is playing it will light up green like shown below
 ![image](https://github.com/user-attachments/assets/bdfb3547-7f3c-4881-b452-5ca35ba17d06)
 
 To stop playing, click on the song again.
+
+
 
 
 ## Libraries Used
