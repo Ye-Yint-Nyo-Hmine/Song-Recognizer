@@ -17,8 +17,10 @@ from scipy.ndimage.morphology import iterate_structure
 
 from typing import Tuple, Callable, List, Union
 
+import uuid
 import os
 from pathlib import Path
+from collections import Counter
 
 from classifier_imports import * 
 
@@ -53,12 +55,23 @@ def file_path_to_fingerprints(file_path: Union[str, Path], amplitude_percentile:
     fingerprints = local_peaks_to_fingerprints(peak_locations, fanout_number)
     return fingerprints
 
-def get_accuracy(song_fingerprints: Tuple[int, int, int], test_fingerprints: Tuple[int, int, int]):
+#for testing
+def get_accuracy_test(song_fingerprints: Tuple[int, int, int], test_fingerprints: Tuple[int, int, int]):
     """Returns the percent match as a decimal of a test clip compared to a pristine studio recording."""
 
     matches = [fp for fp in test_fingerprints if fp in song_fingerprints]
 
     return len(matches) / len(test_fingerprints)
+
+def get_song_for_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
+    """
+    Returns most common Song ID
+    """
+    songs=[]
+    for fp in dict_data_to_id.keys():
+        if fingerprint[0] in fp[0]:
+            songs += dict_data_to_id[fp][0]
+    Counter(songs).most_common()
 
 #function hasn't been tested
 def match(test_fingerprints):
