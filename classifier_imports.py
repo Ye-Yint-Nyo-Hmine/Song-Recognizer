@@ -222,7 +222,21 @@ def local_peak_locations(data_2d, neighborhood, amp_min):
 
 ### Turn peaks to fingerprints ###
 
-def local_peaks_to_fingerprints(local_peaks: List[Tuple[int, int]], num_fanout: int):
+def local_peaks_to_fingerprints_with_absolute_times(local_peaks: List[Tuple[int, int]], num_fanout: int):
+    """Returns the fingerprint and absolute time of the fingerprint of a set of peaks packaged as a tuple.
+
+    Parameters
+    ----------
+    local_peaks : List[Tuple[int, int]]
+        List of row, column (frequency, time) indexes of the peaks
+
+    num_fanout : int
+         Number of fanout points for each reference point
+
+    Returns
+    -------
+    List[Tuple[Tuple[int, int, int], int]]
+        Fingerprint with the absolute time stamp of the fingerprint"""
 
     result = [] #should be a list of lists
 
@@ -234,9 +248,9 @@ def local_peaks_to_fingerprints(local_peaks: List[Tuple[int, int]], num_fanout: 
                 f_freq, f_time = local_peaks[i+j]
                 i_fingerprints += [(i_freq, f_freq, f_time - i_time)]
             
-            result += i_fingerprints
+            result += (i_fingerprints, i_time)
         
-        return result # should be a 2d list, that can then be zipped w the peaks if we need to know which peak its associated with
+        return result # should be a 3d list, that can then be zipped w the peaks if we need to know which peak its associated with
     else:
         return "IndexError"
     
