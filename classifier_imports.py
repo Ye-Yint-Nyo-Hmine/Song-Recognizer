@@ -20,6 +20,8 @@ import os
 from pathlib import Path
 from collections import Counter
 
+SAMPLING_RATE = 44100
+
 ### Load audio file from database ###
 
 def load_music_file(file_path: str):
