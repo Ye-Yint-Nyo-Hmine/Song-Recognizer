@@ -70,7 +70,7 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     songs=[]
     for fp in dict_data_to_id.keys():
         if fingerprint[0] in fp[0]:
-            songs += (dict_data_to_id[fp][0],dict_data_to_id[fp][1]-fingerprint[1])
+            songs.append(get_songs_with_fp(fingerprint))
     return songs
 
 #check if this works with the offput in tuple
