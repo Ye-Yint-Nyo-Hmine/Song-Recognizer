@@ -1,9 +1,10 @@
 # Better Shazam and Spotify: Song Recognizer Cog*Work Week 1
-## Brought to you by We_Love_Bytes
+## Ever hear a song but can’t remember the name? Well download our Python Script.
+### Brought to you by We_Love_Bytes
 ![image](https://github.com/user-attachments/assets/effc65b3-6066-4bcd-8092-b9cadbfa9213)
 <br/>
 <br/>
-#### Ever hear a song but can’t remember the name? Well download our Python Script.
+
 
 ### Installing environment
 To start with an environment, I suggest using Conda
