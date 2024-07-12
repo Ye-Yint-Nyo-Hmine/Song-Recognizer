@@ -15,8 +15,10 @@ from scipy.ndimage.morphology import iterate_structure
 
 from typing import Tuple, Callable, List, Union
 
+import uuid
 import os
 from pathlib import Path
+from collections import Counter
 
 SAMPLING_RATE = 44100
 
@@ -223,9 +225,22 @@ def local_peak_locations(data_2d, neighborhood, amp_min):
     return _peaks(data_2d, rows, cols, amp_min=amp_min)
 
 ### Turn peaks to fingerprints ###
-
 def local_peaks_to_fingerprints(local_peaks: List[Tuple[int, int]], num_fanout: int):
+    """Returns the fingerprint a set of peaks packaged as a tuple.
 
+    Parameters
+    ----------
+    local_peaks : List[Tuple[int, int]]
+        List of row, column (frequency, time) indexes of the peaks
+
+    num_fanout : int
+         Number of fanout points for each reference point
+
+    Returns
+    -------
+    List[Tuple[int, int, int]]
+        List of fingerprints"""
+    
     result = [] #should be a list of lists
 
     if num_fanout <= len(local_peaks):
@@ -234,11 +249,43 @@ def local_peaks_to_fingerprints(local_peaks: List[Tuple[int, int]], num_fanout: 
             i_freq, i_time = local_peaks[i]
             for j in range(1, num_fanout+1):
                 f_freq, f_time = local_peaks[i+j]
-                i_fingerprints += [(i_freq, f_freq, f_time - i_time)]
+                i_fingerprints.append((i_freq, f_freq, f_time - i_time))
             
-            result += i_fingerprints
+            result += i_fingerprints # contatenate lists
         
         return result # should be a 2d list, that can then be zipped w the peaks if we need to know which peak its associated with
+    else:
+        return "IndexError"
+
+def local_peaks_to_fingerprints_with_absolute_times(local_peaks: List[Tuple[int, int]], num_fanout: int):
+    """Returns the fingerprint and absolute time of the fingerprint of a set of peaks packaged as a tuple.
+
+    Parameters
+    ----------
+    local_peaks : List[Tuple[int, int]]
+        List of row, column (frequency, time) indexes of the peaks
+
+    num_fanout : int
+         Number of fanout points for each reference point
+
+    Returns
+    -------
+    List[Tuple[Tuple[int, int, int], int]]
+        List of fingerprints with the absolute time stamps of the fingerprint."""
+
+    result = [] #should be a list of lists
+
+    if num_fanout <= len(local_peaks):
+        for i in range(len(local_peaks) - num_fanout): # subtract because it had to be only peaks after, and dont want index out of bounds error
+            i_fingerprints_with_time = []
+            i_freq, i_time = local_peaks[i]
+            for j in range(1, num_fanout+1):
+                f_freq, f_time = local_peaks[i+j]
+                i_fingerprints_with_time.append(((i_freq, f_freq, f_time - i_time), i_time))
+            
+            result += i_fingerprints_with_time # contatenate lists
+        
+        return result # should be a 3d list, that can then be zipped w the peaks if we need to know which peak its associated with
     else:
         return "IndexError"
     
