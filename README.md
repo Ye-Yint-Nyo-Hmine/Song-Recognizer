@@ -32,7 +32,8 @@ After creating an environment, install libraries by going into the cloned folder
 
 ## Usage
 Our general interface will look like this: 
-![Alt text](https://ibb.co/tcNgZgc) 
+![image](https://github.com/user-attachments/assets/3d1ecc77-2fd9-4fc0-9f9e-976a64f8d09b)
+
 
 With this, 
 
