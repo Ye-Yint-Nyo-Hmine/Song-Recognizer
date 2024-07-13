@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
-from classifier_imports import *
+from classifier_imports_pristine import *
 from classifier_application import *
 
 import pygame
