@@ -459,11 +459,18 @@ def match(test_fingerprints):
     Finds songs with fingerprints
     Returns song with most occurances of test_fingerprints
     """
+    dict_data_to_id, dict_id_to_song = {}, {}
+    with open('fingerprint_database.pkl', 'rb') as f:
+        dict_data_to_id = pickle.load(f)
+    with open('id_to_song_dictionary.pkl', 'rb') as f:
+        dict_id_to_song = pickle.load(f)
+    
     songs=[]
 
     for fp in test_fingerprints:
         print(fp)
-        songs += get_songs_with_fp(fp)
+        if fp in dict_data_to_id:
+            songs += get_songs_with_fp(fp)
         
     return Counter(songs).most_common(1)[0] # [0][0] #remove indexes if error, returns song
 
