@@ -81,9 +81,9 @@ def recognizer(frames):
     print("Matching... ")
     best_ranked = match(fingerprints) # this should be changed to the best ranked matched song PATH***
     print("Best matched: ", best_ranked)
-    print("Starting to play best matched song...")
-    stop_song()
-    playsound(best_ranked)
+    # print("Starting to play best matched song...")
+    # stop_song()
+    # playsound(best_ranked)
 
     
 
