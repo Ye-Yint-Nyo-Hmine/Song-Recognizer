@@ -449,7 +449,7 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     song_ids_with_abs_times = dict_data_to_id[fingerprint[0]]
     songs = []
     for id, abs_t in song_ids_with_abs_times:
-        songs.append((dict_id_to_song[id]) #,  fingerprint[1] - abs_t))
+        songs.append(dict_id_to_song[id]) #,  fingerprint[1] - abs_t))
 
     return songs
 
