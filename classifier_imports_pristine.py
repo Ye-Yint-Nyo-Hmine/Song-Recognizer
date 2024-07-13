@@ -19,6 +19,7 @@ import uuid
 import os
 from pathlib import Path
 from collections import Counter
+import pickle
 
 SAMPLING_RATE = 44100
 
@@ -388,13 +389,45 @@ def get_accuracy_test(song_fingerprints: Tuple[int, int, int], test_fingerprints
 
     return len(matches) / len(test_fingerprints)
 
+def local_peaks_to_fingerprints_abs_times_match_format(local_peaks: List[Tuple[int, int]], num_fanout: int):
+    """Returns the fingerprint and absolute time of the fingerprint of a set of peaks.
+
+    Parameters
+    ----------
+    local_peaks : List[Tuple[int, int]]
+        List of row, column (frequency, time) indexes of the peaks
+
+    num_fanout : int
+         Number of fanout points for each reference point
+
+    Returns
+    -------
+    List[Tuple[Tuple[int, int, int], int]]
+        List of fingerprints with the absolute time of the fingerprint tupled together"""
+
+    result = [] #should be a list of tuples
+
+    if num_fanout <= len(local_peaks):
+        for i in range(len(local_peaks) - num_fanout): # subtract because it had to be only peaks after, and dont want index out of bounds error
+            i_fingerprints_times = []
+            i_freq, i_time = local_peaks[i]
+            for j in range(1, num_fanout+1):
+                f_freq, f_time = local_peaks[i+j]
+                i_fingerprints_times.append(((i_freq, f_freq, f_time - i_time), i_time))
+            
+            result += i_fingerprints_times # contatenate lists
+        
+        return result
+    else:
+        return "IndexError"
+    
 def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     """
     Traverses database for matching input-fingerprint
     Returns list of songs [(song ID,offset),...] in which input-fingerprint occurs
     """
     
-    songs=[]
+    """songs=[]
     
     for fp in dict_data_to_id.keys():
         
@@ -404,8 +437,20 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
                 songs.append( (matching_fp[0], matching_fp[1] - fingerprint[1]) )
 
     #print(songs)
-    return songs
+    return songs"""
 
+    dict_data_to_id, dict_id_to_song = {}, {}
+    with open('fingerprint_database.pkl', 'rb') as f:
+        dict_data_to_id = pickle.load(f)
+    with open('id_to_song_dictionary.pkl', 'rb') as f:
+        dict_id_to_song = pickle.load(f)
+    
+    song_ids_with_abs_times = dict_data_to_id[fingerprint[0]]
+    songs_offsets = []
+    for id, abs_t in song_ids_with_abs_times:
+        songs_offsets.append((dict_id_to_song[id], fingerprint[1] - abs_t))
+
+    return songs_offsets
 
 def match(test_fingerprints):
     from collections import Counter
@@ -420,7 +465,7 @@ def match(test_fingerprints):
         print(fp)
         songs += get_songs_with_fp(fp)
         
-    return Counter(songs).most_common(1)[0][0][0] #remove indexes if error, returns song id
+    return Counter(songs).most_common(1)[0] # [0][0] #remove indexes if error, returns song
 
 
 
