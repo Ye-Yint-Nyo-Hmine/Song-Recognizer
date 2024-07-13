@@ -22,7 +22,7 @@ import os
 from pathlib import Path
 from collections import Counter
 
-from classifier_imports import * 
+from classifier_imports_pristine import * 
 
 def file_path_to_fingerprints(file_path: Union[str, Path], amplitude_percentile: float=0.75, fanout_number: int=15):
     """Take the music file path of a song and returns it's fingerprints.
