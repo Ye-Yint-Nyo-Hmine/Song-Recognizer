@@ -473,7 +473,7 @@ def match(test_fingerprints):
         if fp in dict_data_to_id:
             songs += get_songs_with_fp(fp)
             
-    return Counter(songs_offsets).most_common(1) # [0] # [0][0] #remove indexes if error, returns song
+    return Counter(songs).most_common(1) # [0] # [0][0] #remove indexes if error, returns song
 
 
 
