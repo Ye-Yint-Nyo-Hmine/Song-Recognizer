@@ -465,14 +465,14 @@ def match(test_fingerprints):
     with open('id_to_song_dictionary.pkl', 'rb') as f:
         dict_id_to_song = pickle.load(f)
     
-    songs=[]
+    songs_offsets=[]
 
     for fp in test_fingerprints:
         print(fp)
         if fp in dict_data_to_id:
-            songs += get_songs_with_fp(fp)
-        
-    return Counter(songs).most_common(1)[0] # [0][0] #remove indexes if error, returns song
+            songs_offsets += get_songs_with_fp(fp)
+            
+    return Counter(songs_offsets).most_common(1) # [0] # [0][0] #remove indexes if error, returns song
 
 
 
