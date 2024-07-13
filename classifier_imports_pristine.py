@@ -447,11 +447,11 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
         dict_id_to_song = pickle.load(f)
     
     song_ids_with_abs_times = dict_data_to_id[fingerprint[0]]
-    songs = []
+    songs_offsets = []
     for id, abs_t in song_ids_with_abs_times:
-        songs.append(dict_id_to_song[id]) #,  fingerprint[1] - abs_t))
+        songs_offsets.append((dict_id_to_song[id],  fingerprint[1] - abs_t))
 
-    return songs
+    return songs_offsets
 
 def match(test_fingerprints):
     from collections import Counter
@@ -466,14 +466,14 @@ def match(test_fingerprints):
     with open('id_to_song_dictionary.pkl', 'rb') as f:
         dict_id_to_song = pickle.load(f)
     
-    songs=[]
+    songs_offsets=[]
 
     for fp in test_fingerprints:
         # print(fp)
         if fp in dict_data_to_id:
-            songs += get_songs_with_fp(fp)
+            songs_offsets += get_songs_with_fp(fp)
             
-    return Counter(songs).most_common(1) # [0] # [0][0] #remove indexes if error, returns song
+    return Counter(songs_offsets).most_common(1) # [0] # [0][0] #remove indexes if error, returns song
 
 
 
@@ -484,7 +484,7 @@ if __name__ == '__main__':
     
     
     print("Processing all songs...")
-    process_all_songs("music_files\mp3")
+    # process_all_songs("music_files\mp3")
     
     print("Spectoring... ")
     S = dig_samp_to_spec(samples)
