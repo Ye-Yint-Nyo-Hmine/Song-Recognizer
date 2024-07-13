@@ -439,6 +439,7 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     #print(songs)
     return songs"""
 
+    print("match function successful")
     dict_data_to_id, dict_id_to_song = {}, {}
     with open('fingerprint_database.pkl', 'rb') as f:
         dict_data_to_id = pickle.load(f)
@@ -446,11 +447,11 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
         dict_id_to_song = pickle.load(f)
     
     song_ids_with_abs_times = dict_data_to_id[fingerprint[0]]
-    songs_offsets = []
+    songs = []
     for id, abs_t in song_ids_with_abs_times:
-        songs_offsets.append((dict_id_to_song[id], fingerprint[1] - abs_t))
+        songs.append((dict_id_to_song[id]) #,  fingerprint[1] - abs_t))
 
-    return songs_offsets
+    return songs
 
 def match(test_fingerprints):
     from collections import Counter
@@ -465,12 +466,12 @@ def match(test_fingerprints):
     with open('id_to_song_dictionary.pkl', 'rb') as f:
         dict_id_to_song = pickle.load(f)
     
-    songs_offsets=[]
+    songs=[]
 
     for fp in test_fingerprints:
-        print(fp)
+        # print(fp)
         if fp in dict_data_to_id:
-            songs_offsets += get_songs_with_fp(fp)
+            songs += get_songs_with_fp(fp)
             
     return Counter(songs_offsets).most_common(1) # [0] # [0][0] #remove indexes if error, returns song
 
