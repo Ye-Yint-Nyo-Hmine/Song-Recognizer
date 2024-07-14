@@ -478,7 +478,7 @@ def match(test_fingerprints):
             songs_offsets += song_and_offset
             songs += song_and_offset[0]
 
-    counted_songs = Counter(songs).most_common().sort()            
+    # counted_songs = Counter(songs).most_common().sort()            
             
     return Counter(songs_offsets).most_common() # [0] # [0][0] #remove indexes if error, returns song
 
@@ -505,5 +505,14 @@ if __name__ == '__main__':
     print("Converting Peaks to Fingerprints ...")
     fingerprints, abs_times = local_peaks_to_fingerprints_with_absolute_times(peak_locations, 15)
     print("Matching... ")
-    best_ranked = match(fingerprints) # this should be changed to the best ranked matched song PATH***
+    best_ranked_song_offsets = match(fingerprints) # this should be changed to the best ranked matched song PATH***
+    print(f"Best ranked song-offset pairs: {best_ranked_song_offsets}")
+    
+    best_ranked = best_ranked_song_offsets[0][0]
+
+    if len(best_ranked_song_offsets) > 1 and best_ranked_song_offsets[0][1] == best_ranked_song_offsets[1][1]:
+        songs = [song_offset[0] for song_offset in best_ranked_song_offsets]
+        songs_counted = Counter(songs)
+        best_ranked = songs_counted.most_common(1)[0]
+
     print("Best matched: ", best_ranked)
