@@ -466,7 +466,7 @@ def match(test_fingerprints):
         dict_data_to_id = pickle.load(f)
     with open('id_to_song_dictionary.pkl', 'rb') as f:
         dict_id_to_song = pickle.load(f)
-        print(dict_id_to_song)
+        # print(dict_id_to_song)
     
     songs_offsets=[]
     songs = []
@@ -503,9 +503,9 @@ if __name__ == '__main__':
     peak_locations = local_peak_locations(S, neighborhood, amp_min=find_cutoff_amp(S, 0.75))
 
     print("Converting Peaks to Fingerprints ...")
-    fingerprints, abs_times = local_peaks_to_fingerprints_with_absolute_times(peak_locations, 15)
+    fingerprints_times_package = local_peaks_to_fingerprints_abs_times_match_format(peak_locations, 15)
     print("Matching... ")
-    best_ranked_song_offsets = match(fingerprints) # this should be changed to the best ranked matched song PATH***
+    best_ranked_song_offsets = match(fingerprints_times_package) # this should be changed to the best ranked matched song PATH***
     print(f"Best ranked song-offset pairs: {best_ranked_song_offsets}")
     
     best_ranked = best_ranked_song_offsets[0][0]
