@@ -85,15 +85,19 @@ def recognizer(frames):
     with open("fingerprints_readable.txt", "w") as f:
         pprint.pprint(fingerprints_times_package, stream = f)
 
-    best_ranked_song_offsets = match(fingerprints_times_package)
-    print(f"Best ranked song-offset pairs: {best_ranked_song_offsets}")
+    best_ranked_songs = match(fingerprints_times_package)
+    print(f"Best ranked songs: {best_ranked_songs}")
     
-    best_ranked = best_ranked_song_offsets[0][0]
+    best_ranked = best_ranked_songs[0][0]
 
-    if len(best_ranked_song_offsets) > 1 and best_ranked_song_offsets[0][1] == best_ranked_song_offsets[1][1]:
-        songs = [song_offset[0] for song_offset in best_ranked_song_offsets]
-        songs_counted = Counter(songs)
-        best_ranked = songs_counted.most_common(1)[0]
+    if len(best_ranked_songs) > 1 and best_ranked_songs[0][1] == best_ranked_songs[1][1]:
+        n = best_ranked_songs[0][1]
+        best_ranked = []
+
+        for song, cnt in best_ranked_songs:
+            if cnt < n:
+                break
+            best_ranked.append(song)
 
     print("Best matched: ", best_ranked)
     

@@ -476,11 +476,12 @@ def match(test_fingerprints):
         if fp[0] in dict_data_to_id:
             song_and_offset = get_songs_with_fp(fp)
             songs_offsets += song_and_offset
-            songs += song_and_offset[0]
+            for song, offset in song_and_offset:
+                songs.append(song)
 
-    # counted_songs = Counter(songs).most_common().sort()            
+    counted_songs = Counter(songs).most_common()           
             
-    return Counter(songs_offsets).most_common() # [0] # [0][0] #remove indexes if error, returns song
+    return counted_songs # Counter(songs_offsets).most_common() # [0] # [0][0] #remove indexes if error, returns song
 
 
 
@@ -505,7 +506,8 @@ if __name__ == '__main__':
     print("Converting Peaks to Fingerprints ...")
     fingerprints_times_package = local_peaks_to_fingerprints_abs_times_match_format(peak_locations, 15)
     print("Matching... ")
-    best_ranked_song_offsets = match(fingerprints_times_package) # this should be changed to the best ranked matched song PATH***
+
+    """best_ranked_song_offsets = match(fingerprints_times_package) # this should be changed to the best ranked matched song PATH***
     print(f"Best ranked song-offset pairs: {best_ranked_song_offsets}")
     
     best_ranked = best_ranked_song_offsets[0][0]
@@ -514,5 +516,21 @@ if __name__ == '__main__':
         songs = [song_offset[0] for song_offset in best_ranked_song_offsets]
         songs_counted = Counter(songs)
         best_ranked = songs_counted.most_common(1)[0]
+
+    print("Best matched: ", best_ranked)"""
+
+    best_ranked_songs = match(fingerprints_times_package)
+    print(f"Best ranked songs: {best_ranked_songs}")
+    
+    best_ranked = best_ranked_songs[0][0]
+
+    if len(best_ranked_songs) > 1 and best_ranked_songs[0][1] == best_ranked_songs[1][1]:
+        n = best_ranked_songs[0][1]
+        best_ranked = []
+
+        for song, cnt in best_ranked_songs:
+            if cnt < n:
+                break
+            best_ranked.append(song)
 
     print("Best matched: ", best_ranked)
