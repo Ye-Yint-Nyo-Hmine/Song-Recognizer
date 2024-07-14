@@ -449,7 +449,7 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     song_ids_with_abs_times = dict_data_to_id[fingerprint[0]]
     songs_offsets = []
     for id, abs_t in song_ids_with_abs_times:
-        songs_offsets.append((dict_id_to_song[id],  fingerprint[1] - abs_t))
+        songs_offsets.append((dict_id_to_song[id],  abs_t - fingerprint[1]))
 
     return songs_offsets
 
@@ -460,20 +460,27 @@ def match(test_fingerprints):
     Finds songs with fingerprints
     Returns song with most occurances of test_fingerprints
     """
+    print("IN MATCH")
     dict_data_to_id, dict_id_to_song = {}, {}
     with open('fingerprint_database.pkl', 'rb') as f:
         dict_data_to_id = pickle.load(f)
     with open('id_to_song_dictionary.pkl', 'rb') as f:
         dict_id_to_song = pickle.load(f)
+        print(dict_id_to_song)
     
     songs_offsets=[]
+    songs = []
 
     for fp in test_fingerprints:
-        # print(fp)
-        if fp in dict_data_to_id:
-            songs_offsets += get_songs_with_fp(fp)
+        #print(fp in dict_data_to_id)
+        if fp[0] in dict_data_to_id:
+            song_and_offset = get_songs_with_fp(fp)
+            songs_offsets += song_and_offset
+            songs += song_and_offset[0]
+
+    counted_songs = Counter(songs).most_common().sort()            
             
-    return Counter(songs_offsets).most_common(1) # [0] # [0][0] #remove indexes if error, returns song
+    return Counter(songs_offsets).most_common() # [0] # [0][0] #remove indexes if error, returns song
 
 
 

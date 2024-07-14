@@ -29,6 +29,7 @@ import os
 from pathlib import Path
 from collections import Counter
 import pickle
+import pprint
 
 color_palette = {
     "bg": "#171717",
@@ -79,6 +80,11 @@ def recognizer(frames):
 
     print("Converting Peaks to Fingerprints ...")
     fingerprints_times_package = local_peaks_to_fingerprints_abs_times_match_format(peak_locations, 15)
+
+    print("Writing to file")
+    with open("fingerprints_readable.txt", "w") as f:
+        pprint.pprint(fingerprints_times_package, stream = f)
+
     print("Matching... ")
     best_ranked = match(fingerprints_times_package) # this should be changed to the best ranked matched song PATH (but right now it's song name)***
     print("Best matched: ", best_ranked)
@@ -96,14 +102,13 @@ def record(duration=10):
 
     listen_time = duration  # <COGSTUB> seconds
     frames, sample_rate = record_audio(listen_time)
+    print("IN RECORDING")
     recognizer(frames)
- 
 
 
 def get_song_list(path_folder):
     song_list = []
     for music in os.listdir(path_folder):
-        print(music.split(".")[0].split("--"))
         artist, title = music.split(".")[0].split("--")
         song = music
         song_list.append([artist, title, song, 0])
