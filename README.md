@@ -7,7 +7,7 @@
 
 
 ### Installing environment
-To start with an environment, I suggest using Conda
+To start with an environment, we suggest using Conda
 
 [WINDOWS](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html) 
 
@@ -15,15 +15,17 @@ To start with an environment, I suggest using Conda
 
 
 ### Creating environment
-To create an environment, in your terminal, replace the following ```env_name``` with the preferred name:
+To create the appropriate environment, type the following in your terminal, replace the following ```env_name``` with the preferred name:
 
-```conda create --name env_name```
+```conda create -n env_name python=3.8 numpy scipy matplotlib pyaudio numba```
 
 Activate it with:
 
-```conda activate conda env_name```
+```conda activate env_name```
 
-And within the same environment, clone the repository
+Once it is activated, download the [Microphone](https://github.com/CogWorksBWSI/Microphone) package by following the instructions.
+
+Once done, navigate out of Microphone and back into original/parent directory and clone the repository
 
 ```git clone https://github.com/Ye-Yint-Nyo-Hmine/Song-Recognizer.git```
 
