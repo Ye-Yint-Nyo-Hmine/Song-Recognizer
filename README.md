@@ -17,7 +17,7 @@ To start with an environment, we suggest using Conda
 ### Creating environment
 To create the appropriate environment, type the following in your terminal, replace the following ```env_name``` with the preferred name:
 
-```conda create -n env_name python=3.8 numpy scipy matplotlib pyaudio numba```
+```conda create -n env_name python=3.8 ipython numpy scipy matplotlib pyaudio numba```
 
 Activate it with:
 
