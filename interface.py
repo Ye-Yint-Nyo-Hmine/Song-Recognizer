@@ -30,6 +30,7 @@ from pathlib import Path
 from collections import Counter
 import pickle
 import pprint
+import shutil
 
 color_palette = {
     "bg": "#171717",
@@ -60,8 +61,9 @@ def add_song():
     if file_path:
         dest_path = os.path.join("music_files/mp3", os.path.basename(file_path))
         shutil.copy(file_path, dest_path)
-        artist, title = os.path.basename(file_path).split(".")[0].split("--")
-        song_list.append((artist, title, os.path.basename(file_path)))
+        song = os.path.basename(file_path) # .split(".")[0].split("--")
+        song_list.append([song, 0])
+        add_song_path_to_database(dest_path)
         display_songs("music_files/mp3", song_list)
 
 def recognizer(frames):
@@ -122,21 +124,21 @@ def record(duration=10):
 def get_song_list(path_folder):
     song_list = []
     for music in os.listdir(path_folder):
-        artist, title = music.split(".")[0].split("--")
+        # artist, title = music.split(".")[0].split("--")
         song = music
-        song_list.append([artist, title, song, 0])
+        song_list.append([song, 0])
     return song_list
 
 def play_song(path, song_list, index):
     global main_path
-    if song_list[index][3] == 1:
+    if song_list[index][1] == 1:
         stop_song()
-        song_list[index][3] = 0
+        song_list[index][1] = 0
         display_songs(main_path, song_list)
     else:
         for songs in song_list:
-            songs[3] = 0
-        song_list[index][3] = 1
+            songs[1] = 0
+        song_list[index][1] = 1
         pygame.mixer.init()
         pygame.mixer.music.load(path)
         pygame.mixer.music.play()
@@ -166,12 +168,12 @@ def display_songs(music_path, song_list, max_show=10, x_origin=50, y_origin=150,
         if index >= 14 and index % 14 == 0:
             y_origin = 150
             x_origin += 550
-        artist, title, song, playing = songs
+        song, playing = songs
         fg = color_palette["text"]
         if playing:
             fg = color_palette["active text"]
         song_duration = get_song_duration(os.path.join(music_path, song))
-        song_block = Button(root, text=f"{song_duration[0]:02}:{song_duration[1]:02}.  {title}  by {artist}", font=font_style_small, bg=color_palette["bg"], 
+        song_block = Button(root, text=f"{song_duration[0]:02}:{song_duration[1]:02}.  {song}", font=font_style_small, bg=color_palette["bg"],
                             fg=fg, borderwidth=0, relief="sunken", 
                             activebackground=color_palette["bg"], activeforeground=color_palette["active text"], 
                             command=lambda path=os.path.join(music_path, song), song_list=song_list, index=index: play_song(path, song_list, index))
@@ -196,7 +198,7 @@ record_song_button = Button(root, text=f"Recognize", font=font_style_medium, bg=
 main_path = "music_files/mp3"
 song_list = get_song_list(main_path)
 display_songs(main_path, song_list)
-
+load_initial_database()
 
 root.mainloop()
 

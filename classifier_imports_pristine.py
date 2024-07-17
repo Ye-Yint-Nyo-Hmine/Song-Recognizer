@@ -22,6 +22,57 @@ from collections import Counter
 import pickle
 
 SAMPLING_RATE = 44100
+dict_data_to_id, dict_id_to_song = {}, {}
+
+
+def load_initial_database():
+    global dict_data_to_id
+    global dict_id_to_song
+
+    with open('fingerprint_database.pkl', 'rb') as f:
+        dict_data_to_id = pickle.load(f)
+    with open('id_to_song_dictionary.pkl', 'rb') as f:
+        dict_id_to_song = pickle.load(f)
+
+def add_song_path_to_database(file_path: Union[str, Path], amplitude_percentile: float=0.75, fanout_number: int=15):
+    """Take the music file path of a song and returns its fingerprints to the database.
+
+    Parameters
+    ----------
+    file_path : Union[str, Path]
+        File path for music file
+
+    amplitude_percentile : float, optional
+         A demical < 1.0 for which all amplitudes less than the {percentile}
+         percentile of amplitudes will be disregarded
+
+    fanout_number: int, optional
+        Number of fanouts for each reference point/peak in the spectrogram"""
+
+    global dict_data_to_id
+    global dict_id_to_song
+
+    samples = load_music_file(file_path)
+
+    S = dig_samp_to_spec(samples)
+
+    neighborhood = iterate_structure(generate_binary_structure(2, 1), 20)
+
+    peak_locations = local_peak_locations(S, neighborhood, amp_min=find_cutoff_amp(S, amplitude_percentile))
+
+    fingerprints, abs_times = local_peaks_to_fingerprints_with_absolute_times(peak_locations, fanout_number)
+    
+    song_id = str(uuid.uuid4())
+    
+    for fp, abs_time in zip(fingerprints, abs_times):
+        if fp in dict_data_to_id:
+            dict_data_to_id[fp].append((song_id, abs_time))
+        else:
+            dict_data_to_id[fp] = [(song_id, abs_time)]
+
+    song = os.path.basename(file_path).replace(".mp3", "")
+    
+    dict_id_to_song[song_id] = song
 
 ### Load audio file from database ###
 
@@ -62,37 +113,6 @@ def convert_mic_frames_to_audio(frames: np.ndarray) -> np.ndarray:
     return np.hstack([np.frombuffer(i, np.int16) for i in frames])
 
 ### Clip Maker function to test classifier ###
-dict_data_to_id = {}
-def process_all_songs(directory_path: str, num_fanout: int = 5):
-    global dict_data_to_id
-    
-    
-    for filename in os.listdir(directory_path):
-        if filename.endswith(".mp3"):
-            file_path = os.path.join(directory_path, filename)
-            print(f"Processing {file_path}...")
-
-            # Load and process the audio file
-            audio = load_music_file(file_path)
-            S = dig_samp_to_spec(audio)
-
-            # Define neighborhood structure for peak detection
-            neighborhood = generate_binary_structure(2, 1)
-            neighborhood = iterate_structure(neighborhood, 20)
-
-            # Detect peaks
-            amp_min = find_cutoff_amp(S, 0.77)
-            peaks = local_peak_locations(S, neighborhood, amp_min)
-
-            # Generate fingerprints
-            fingerprints = local_peaks_to_fingerprints(peaks, num_fanout)
-            song_id = str(uuid.uuid4())
-
-            # Store fingerprints in the dictionary
-            for fp in fingerprints:
-                if fp not in dict_data_to_id:
-                    dict_data_to_id[fp] = []
-                dict_data_to_id[fp].append((song_id, fp[2]))
 
 def make_random_clips(samples: np.ndarray, *, desired_length: int, count: int):
     """Takes audio samples and cuts {count} number of {desired_length} clips.
@@ -322,8 +342,7 @@ def local_peaks_to_fingerprints_with_absolute_times(local_peaks: List[Tuple[int,
     else:
         return "IndexError"
     
-def process_all_songs(directory_path: str, num_fanout: int = 5):
-    global dict_data_to_id
+def process_all_songs(directory_path: str, num_fanout: int = 15):
     dict_data_to_id = {}
     
     for filename in os.listdir(directory_path):
@@ -440,11 +459,8 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     return songs"""
 
     print("match function successful")
-    dict_data_to_id, dict_id_to_song = {}, {}
-    with open('fingerprint_database.pkl', 'rb') as f:
-        dict_data_to_id = pickle.load(f)
-    with open('id_to_song_dictionary.pkl', 'rb') as f:
-        dict_id_to_song = pickle.load(f)
+    global dict_data_to_id
+    global dict_id_to_song
     
     song_ids_with_abs_times = dict_data_to_id[fingerprint[0]]
     songs_offsets = []
@@ -461,12 +477,8 @@ def match(test_fingerprints):
     Returns song with most occurances of test_fingerprints
     """
     print("IN MATCH")
-    dict_data_to_id, dict_id_to_song = {}, {}
-    with open('fingerprint_database.pkl', 'rb') as f:
-        dict_data_to_id = pickle.load(f)
-    with open('id_to_song_dictionary.pkl', 'rb') as f:
-        dict_id_to_song = pickle.load(f)
-        # print(dict_id_to_song)
+    global dict_data_to_id
+    global dict_id_to_song
     
     songs_offsets=[]
     songs = []
