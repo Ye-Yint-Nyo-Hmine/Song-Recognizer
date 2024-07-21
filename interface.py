@@ -55,18 +55,24 @@ root.configure(bg=color_palette["bg"])
 main_label = Label(text="We Love Bytes - Song Recognizer", font=font_style_large, bg=color_palette["bg"], 
                             fg=color_palette["accent2"], borderwidth=0, relief="sunken").place(x=20, y=20)
 
+main_path = "music_files/mp3"
+
+pygame.mixer.init()
 
 def add_song():
+    global main_path
+
     file_path = filedialog.askopenfilename(filetypes=[("MP3 files", "*.mp3")])
     if file_path:
-        dest_path = os.path.join("music_files/mp3", os.path.basename(file_path))
+        dest_path = os.path.join(main_path, os.path.basename(file_path))
         shutil.copy(file_path, dest_path)
         song = os.path.basename(file_path) # .split(".")[0].split("--")
         song_list.append([song, 0])
         add_song_path_to_database(dest_path)
-        display_songs("music_files/mp3", song_list)
+        display_songs(main_path, song_list)
 
 def recognizer(frames):
+    global main_path
 
     print("Sampling... ")
     samples = convert_mic_frames_to_audio(frames)
@@ -80,13 +86,14 @@ def recognizer(frames):
     print("Finding Peaks... ")
     peak_locations = local_peak_locations(S, neighborhood, amp_min=find_cutoff_amp(S, 0.75))
 
-    print("Converting Peaks to Fingerprints ...")
+    print("Converting Peaks to Fingerprints...")
     fingerprints_times_package = local_peaks_to_fingerprints_abs_times_match_format(peak_locations, 15)
 
-    print("Writing to file")
+    print("Writing to file...")
     with open("fingerprints_readable.txt", "w") as f:
         pprint.pprint(fingerprints_times_package, stream = f)
 
+    print("Matching...")
     best_ranked_songs = match(fingerprints_times_package)
     print(f"Best ranked songs: {best_ranked_songs}")
     
@@ -103,11 +110,28 @@ def recognizer(frames):
 
     print("Best matched: ", best_ranked)
     
-    # print("Starting to play best matched song...")
-    # stop_song()
-    # playsound(best_ranked)
+    if isinstance(best_ranked, list):
+        best_ranked = best_ranked[0]
+        print("Starting to play one best matched song...\n\n")
 
-    
+    else:
+        print("Starting to play best matched song...\n\n")
+
+    play_correct_song(os.path.join(main_path, best_ranked+".mp3"), get_song_list(main_path))
+
+def play_correct_song(path, song_list):
+        global main_path
+
+        for songs in song_list:
+            songs[1] = 0
+        for i, (song_path, playing) in enumerate(song_list):
+            if str(os.path.join(main_path, song_path)) == str(path):
+                song_list[i][1] = 1
+                pygame.mixer.music.load(path)
+                pygame.mixer.music.play()
+                break
+
+        display_songs(main_path, song_list)
 
 def record(duration=10):
     """
@@ -115,7 +139,9 @@ def record(duration=10):
     """
     from microphone import record_audio
 
-    listen_time = duration  # <COGSTUB> seconds
+    stop_song()
+
+    listen_time = duration
     frames, sample_rate = record_audio(listen_time)
     print("IN RECORDING")
     recognizer(frames)
@@ -139,7 +165,6 @@ def play_song(path, song_list, index):
         for songs in song_list:
             songs[1] = 0
         song_list[index][1] = 1
-        pygame.mixer.init()
         pygame.mixer.music.load(path)
         pygame.mixer.music.play()
         display_songs(main_path, song_list)
@@ -195,11 +220,8 @@ record_song_button = Button(root, text=f"Recognize", font=font_style_medium, bg=
 
 
 
-main_path = "music_files/mp3"
 song_list = get_song_list(main_path)
 display_songs(main_path, song_list)
 load_initial_database()
 
 root.mainloop()
-
-
