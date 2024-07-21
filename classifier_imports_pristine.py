@@ -458,7 +458,7 @@ def get_songs_with_fp(fingerprint: Tuple[Tuple[int, int, int], int]):
     #print(songs)
     return songs"""
 
-    print("match function successful")
+    # print("match function successful")
     global dict_data_to_id
     global dict_id_to_song
     
@@ -476,7 +476,7 @@ def match(test_fingerprints):
     Finds songs with fingerprints
     Returns song with most occurances of test_fingerprints
     """
-    print("IN MATCH")
+    # print("IN MATCH")
     global dict_data_to_id
     global dict_id_to_song
     
