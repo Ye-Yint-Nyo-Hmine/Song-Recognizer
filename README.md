@@ -49,7 +49,8 @@ Finally, run the file "interface.py":
 
 ## Usage
 Our general interface will look like this: 
-![image](https://github.com/user-attachments/assets/3d1ecc77-2fd9-4fc0-9f9e-976a64f8d09b)
+![image](https://github.com/user-attachments/assets/98bcb8e3-9f10-4523-b65f-f26b6ebbffbf)
+
 
 
 With this, 
@@ -74,7 +75,7 @@ To record a song, hit the record button which will take input from your micropho
 
 ### Playing Songs
 To play a song, just click on the song name. To know if a song is playing it will light up green like shown below
-![image](https://github.com/user-attachments/assets/bdfb3547-7f3c-4881-b452-5ca35ba17d06)
+![image](https://github.com/user-attachments/assets/7400c985-eff0-41e4-9742-8bd6af00526b)
 
 To stop playing, click on the song again.
 
